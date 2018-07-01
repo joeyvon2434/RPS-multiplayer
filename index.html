@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rock Paper Scissors!</title>
+
+    <!--Stylesheet links-->
+    <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!--Firebase script link-->
+    <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <h1 id="main-title">Rock Paper Scissors</h1>
+        <div id="welcome-page" style="border: 1px solid black;">
+            <label>Enter your name</label>
+            <br>
+            <input type="text" id="username-input">
+            <br>
+            <button id="play-button">Let's Play!</button>
+
+        </div>
+
+        <div id="player1-box" style="border: 1px solid red;">
+            <h2 class="player-title">Player 1</h2>
+            <div class="stats-box">stats</div>
+            <div class="selection-box" style="border: 1px solid black;">
+                <img class="rock-box" src="#" alt="rock">
+                <img class="paper-box" src="#" alt="paper">
+                <img class="scissors-box" src="#" alt="scissors">
+            </div>
+            <div class="chat-box">chat box</div>
+            <input id="player1-chat" class="chat-message" type="text">
+            <button id="player1-send" class="send-button">Send</button>
+
+        </div>
+
+
+        <footer>Joseph Von Edwins 2018</footer>
+    </div>
+
+
+    <!--JQuery link script-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="assets/javascript/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+#wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#main-title {
+    width: 100%;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 45px;
+    padding: 10px;
+    background: gray;
+}
+
+#welcome-page, #player1-box, #player2-box, #viewer-box {
+    position: relative;
+    display: block;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#welcome-page {
+    height: 60vh;
+}
+
+#player1-box, #player2-box, #viewer-box {
+    height: 73vh;
+}
+
+#username-input, #welcome-page label, #play-button {
+    position: relative;
+    display: block;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#welcome-page label {
+    top: 30%;
+    font-size: 30px;
+}
+
+#username-input {
+    top: 35%;
+    width: 50%;
+    font-size: 18px;
+}
+
+#play-button {
+    top: 40%;
+    width: 20%;
+    height: 40px;
+    font-size: 20px;
+}
+
+.player-title {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 30px;
+    top: 5%;
+}
+
+.stats-box {
+    position: absolute;
+    width: 20%;
+    border: 1px solid black;
+    top: 0;
+    right: 0;
+    height: 10vh;
+}
+
+.selection-box {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    width: 90%;
+    height: 25%;
+}
+
+.chat-box {
+    position: absolute;
+    top: 50%;
+    width: 70%;
+    left: 15%;
+    border: 1px solid black;
+    height: 35%;
+}
+
+.chat-message {
+    position: absolute;
+    top: 89%;
+    left: 15%;
+    width: 55%;
+    font-size: 16px;
+}
+
+.send-button {
+    position: absolute;
+    top: 89%;
+    left: 72%;
+    width: 13%;
+    font-size: 16px;
+}
+
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    border-top: 3px solid blue;
+}
