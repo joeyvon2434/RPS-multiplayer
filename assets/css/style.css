@@ -27,6 +27,7 @@
 
 #player1-box, #player2-box, #viewer-box {
     height: 73vh;
+    margin-bottom: 20px;
 }
 
 #username-input, #welcome-page label, #play-button {

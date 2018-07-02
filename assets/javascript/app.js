@@ -3,6 +3,7 @@
 
 //Global variable definitions
 
+var username = '';
 var usernameList = [];
 var playerOne = '';
 var playerTwo = '';
@@ -37,26 +38,28 @@ $(document).ready(function () {
 
     database.ref().on('value', function (snapshot) {
         //set initial usernameList value
-        console.log(snapshot.val());
+        
         if (snapshot.child("usernameList").exists()) {
-            usernameList=[];
+            usernameList = [];
             var tempUserList = snapshot.val().usernameList.usernameList;
-            console.log(tempUserList);
+            
             usernameList = tempUserList;
-            console.log('here ' + usernameList)
+            console.log('namelist ' + usernameList)
         } else {
             usernameList = [];
         }
 
         //set initial playerOne and playerTwo value
         if (snapshot.child("playerOne").exists()) {
-            playerOne = snapshot.val().playerOne;
+            var playerOneRef = snapshot.val().playerOne;
+            playerOne = playerOneRef.playerOne;
         } else {
             playerOne = '';
         }
 
         if (snapshot.child("playerTwo").exists()) {
-            playerTwo = snapshot.val().playerTwo;
+            var playerTwoRef = snapshot.val().playerTwo;
+            playerTwo = playerTwoRef.playerTwo;
         } else {
             playerTwo = '';
         }
@@ -78,20 +81,21 @@ $(document).ready(function () {
     $('#play-button').on('click', function (event) {
         event.preventDefault();
 
-        var username = $('#username-input').val();
+        var tempUsername = $('#username-input').val();
+        $('#username-input').val('');
         var uniqueName = true;
 
 
         //get usernameList variable value from firebase server
 
         //check to see if user input a username
-        if (username == "") {
+        if (tempUsername == "") {
             alert('You must enter a username to proceed.');
             uniqueName = false;
         } else { //check to see if the username is unique
 
             for (i = 0; i < usernameList.length; i++) {
-                if (username == usernameList[i]) {
+                if (tempUsername == usernameList[i]) {
                     alert('That username is taken. Please choose a new username.')
                     uniqueName = false;
                 }
@@ -99,6 +103,9 @@ $(document).ready(function () {
         }
 
         if (uniqueName == true) {
+            $('#welcome-page').fadeOut(500);
+            username = tempUsername;
+            console.log('username: ' + username);
             usernameList.push(username);
 
             //clear session storage and add the new username to session storage
@@ -110,28 +117,41 @@ $(document).ready(function () {
             userNameListRef.set({
                 usernameList: usernameList
             });
+
+
+            if (playerOne == '') {
+                playerOne = username;
+                var playerOneRef = database.ref('/playerOne');
+                playerOneRef.set({
+                    playerOne: playerOne
+                });
+            } else if (playerTwo == '') {
+                playerTwo = username;
+                var playerTwoRef = database.ref('/playerTwo');
+                playerTwoRef.set({
+                    playerTwo: playerTwo
+                });
+            } else {
+                viewers.push(username);
+                var viewersRef = database.ref('/viewers');
+                viewersRef.set({
+                    viewers: viewers
+                });
+            }
         }
 
-        if (playerOne == '') {
-            playerOne = username;
-            var playerOneRef = database.ref('/playerOne');
-            playerOneRef.set({
-                playerOne: playerOne
-            });
-        } else if (playerTwo == '') {
-            playerTwo = username;
-            var playerTwoRef = database.ref('/playerTwo');
-            playerTwoRef.set({
-                playerTwo: playerTwo
-            });
+        //Section to show the correct screen to each player
+        
+        username = sessionStorage.getItem('username');
+        console.log('2: ' + username)
+
+        if (username === playerOne) {
+            $('#player1-box').delay(501).fadeIn(500);
+        } else if (username == playerTwo) {
+            $('#player2-box').delay(501).fadeIn(500);
         } else {
-            viewers.push(username);
-            var viewersRef = database.ref('/viewers');
-            viewersRef.set({
-                viewers: viewers
-            });
+            $('#viewer-box').delay(501).fadeIn(500);
         }
-
 
     });//play-button click close
 
