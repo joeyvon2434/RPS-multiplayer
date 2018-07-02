@@ -82,6 +82,24 @@
     height: 25%;
 }
 
+.pictures {
+    position: absolute;
+    display: block;
+    height: 100%;
+}
+
+.rock-box {
+    left: 5%;
+}
+
+.paper-box {
+    left: 45%
+}
+
+.scissors-box {
+    right: 5%;
+}
+
 .chat-box {
     position: absolute;
     top: 50%;

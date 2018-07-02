@@ -44,7 +44,6 @@ $(document).ready(function () {
             var tempUserList = snapshot.val().usernameList.usernameList;
             
             usernameList = tempUserList;
-            console.log('namelist ' + usernameList)
         } else {
             usernameList = [];
         }
@@ -105,7 +104,6 @@ $(document).ready(function () {
         if (uniqueName == true) {
             $('#welcome-page').fadeOut(500);
             username = tempUsername;
-            console.log('username: ' + username);
             usernameList.push(username);
 
             //clear session storage and add the new username to session storage
@@ -143,7 +141,6 @@ $(document).ready(function () {
         //Section to show the correct screen to each player
         
         username = sessionStorage.getItem('username');
-        console.log('2: ' + username)
 
         if (username === playerOne) {
             $('#player1-box').delay(501).fadeIn(500);
