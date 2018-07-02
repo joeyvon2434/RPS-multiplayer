@@ -64,7 +64,7 @@
     top: 5%;
 }
 
-.stats-box {
+.stats-box, .queue-box {
     position: absolute;
     width: 20%;
     border: 1px solid black;
@@ -73,7 +73,7 @@
     height: 10vh;
 }
 
-.selection-box {
+.selection-box, .info-box {
     position: absolute;
     top: 20%;
     left: 5%;
@@ -105,6 +105,7 @@
     width: 13%;
     font-size: 16px;
 }
+
 
 
 footer {

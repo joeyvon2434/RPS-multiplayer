@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <!--Firebase script link-->
-    <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
 
 </head>
 
@@ -40,6 +40,33 @@
 
         </div>
 
+        <div id="player2-box" style="border: 1px solid red;">
+            <h2 class="player-title">Player 2</h2>
+            <div class="stats-box">stats</div>
+            <div class="selection-box" style="border: 1px solid black;">
+                <img class="rock-box" src="#" alt="rock">
+                <img class="paper-box" src="#" alt="paper">
+                <img class="scissors-box" src="#" alt="scissors">
+            </div>
+            <div class="chat-box">chat box</div>
+            <input id="player2-chat" class="chat-message" type="text">
+            <button id="player2-send" class="send-button">Send</button>
+
+        </div>
+
+        <div id="viewer-box" style="border: 1px solid red;">
+                <h2 class="player-title">Viewers</h2>
+                <div class="queue-box">Next Player Queue</div>
+                <div class="info-box" style="border: 1px solid black;">
+                    <img class="player-1-choice" src="#" alt="player-2-choice">
+                    <div class="score-board">score board</div>
+                    <img class="player-2-choice" src="#" alt="player-2-choice">
+                </div>
+                <div class="chat-box">chat box</div>
+                <input id="viewer-chat" class="chat-message" type="text">
+                <button id="viewer-send" class="send-button">Send</button>
+    
+            </div>
 
         <footer>Joseph Von Edwins 2018</footer>
     </div>
