@@ -10,9 +10,9 @@ var playerTwo = '';
 var viewers = [];
 var playerOneChoice = '';
 var playerTwoChoice = '';
-var newRound = true;
 var playerOneReady = false;
 var playerTwoReady = false;
+var gameStage = '';
 var playerOneTie = 0;
 var playerTwoTie = 0;
 var playerOneWins = 0;
@@ -82,24 +82,26 @@ $(document).ready(function () {
             viewers = [];
         }
 
-        //set initial values of playerOne and playerTwo choices
-        if (!snapshot.child("playerOneChoice").exists()) {
-            var playerOneChoiceRef = database.ref('/playerOneChoice');
-            playerOneChoiceRef.set({
-                playerOneChoice: playerOneChoice
-            });
-        };
+        // //set initial values of playerOne and playerTwo choices
+        // if (snapshot.child("playerOneChoice").exists()) {
+        //     var playerOneChoiceRef = database.ref('/playerOneChoice');
+        //     playerOneChoiceRef.set({
+        //         playerOneChoice: playerOneChoice
+        //     });
+        // } else {
+        //     playerOneChoice = '';
+        // };
 
-        if (!snapshot.child("playerTwoChoice").exists()) {
-            var playerTwoChoiceRef = database.ref('/playerTwoChoice');
-            playerTwoChoiceRef.set({
-                playerTwoChoice: playerTwoChoice
-            });
-        };
+        // if (snapshot.child("playerTwoChoice").exists()) {
+        //     var playerTwoChoiceRef = database.ref('/playerTwoChoice');
+        //     playerTwoChoiceRef.set({
+        //         playerTwoChoice: playerTwoChoice
+        //     });
+        // } else {
+        //     playerTwoChoice = '';
+        // };
 
     });
-
-
 
 
     //Function to add the username of each user
@@ -181,16 +183,13 @@ $(document).ready(function () {
 
     //Begin round when player 1 and player 2 have been set
 
-    database.ref().on('value', function () {
-
         //starts game when both player 1 and player 2 have been set
         if (playerOne != '' && playerTwo != '') {
-
             //'alerts' players to make their choices
-            if (username == playerOne && newRound == true || username == playerTwo && newRound == true) {
+            if (username == playerOne || username == playerTwo) {
                 $('.player-choose-message').fadeIn(500).delay(2000).fadeOut(500);
-                newRound = false;
-            }
+                
+            };
             // listens for clicks to assign the players choices and passes them to firebase
 
             //player 1
@@ -202,7 +201,7 @@ $(document).ready(function () {
                 playerOneChoiceRef.set({
                     playerOneChoice: playerOneChoice
                 });
-
+                console.log(playerOneChoice);
                 $('.player1-choices').fadeOut(250);
 
             });
@@ -216,88 +215,119 @@ $(document).ready(function () {
                 playerTwoChoiceRef.set({
                     playerTwoChoice: playerTwoChoice
                 });
-
+                console.log(playerTwoChoice);
                 $('.player2-choices').fadeOut(250);
             });
 
         } //ends if statement to begin the game when players 1 and 2 are set
 
         //check the results for player 1 and player 2 and declare a winner
-        database.ref().on('value', function (snapshot) {
-
-
-
-             
+       
 
             //read in player1 and player2 choices from database
-            var tempPlayerOneChoice = snapshot.val().playerOneChoice;
-            playerOneChoice = tempPlayerOneChoice;
-            playerOneReady = true;
-            console.log(playerOneChoice);
-            var tempPlayerTwoChoice = snapshot.val().playerTwoChoice;
-            playerTwoChoice = tempPlayerTwoChoice;
-            playerTwoReady = true;
-            console.log(playerTwoChoice);
 
-//if (playerOneReady == true && playerTwoReady == true) { //player ready section
+            
+            // var tempPlayerOneChoice = snapshot.val().playerOneChoice;
+            // playerOneChoice = tempPlayerOneChoice;
 
-            //if players choose the same
-            if (playerOneChoice == playerTwoChoice) {
-                playerOneTie = playerOneTie + 1;
-                playerTwoTie = playerTwoTie + 1;
-                playerOneReady = false;
-                playerTwoReady = false;
-                alert('tie');
+            // if (playerOneChoice == 'rock' || playerOneChoice == 'paper' || playerOneChoice == 'scissors') {
+            //     playerOneReady = true;
+            //     console.log(playerOneChoice);
+            // }
 
-            } else if (playerOneChoice == 'rock') {
-                //if player 1 chooses rock
-                if (playerTwoChoice == 'paper') {
-                    playerOneLosses = playerOneLosses + 1;
-                    playerTwoWins = playerTwoWins + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 2 wins');
-                } else {//checking scissors by elimination
-                    playerOneWins = playerOneWins + 1;
-                    playerTwoLosses = playerTwoLosses + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 1 wins')
-                };
 
-            } else if (playerOneChoice == 'paper') {
-                //if player 1 chooses paper
-                if (playerTwoChoice == 'rock') {
-                    playerOneWins = playerOneWins + 1;
-                    playerTwoLosses = playerTwoLosses + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 1 wins');
-                } else {//checking scissors by elimination
-                    playerOneLosses = playerOneLosses + 1;
-                    playerTwoWins = playerTwoWins + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 2 wins');
-                };
-            } else { //playerOneChoice is scissors by elimination
-                if (playerTwoChoice == 'rock') {
-                    playerOneLosses = playerOneLosses + 1;
-                    playerTwoWins = playerTwoWins + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 2 wins');
-                } else {//checking paper by elimination
-                    playerOneWins = playerOneWins + 1;
-                    playerTwoLosses = playerTwoLosses + 1;
-                    playerOneReady = false;
-                    playerTwoReady = false;
-                    alert('player 1 wins');
-                };
-            };
-     //   } player ready section
-        }); //end section to check answers when both players have selected
-        
-    }); //ends if statement to ensure there are two players
+//             var tempPlayerTwoChoice = snapshot.val().playerTwoChoice;
+//             playerTwoChoice = tempPlayerTwoChoice;
+
+//             if (playerTwoChoice == 'rock' || playerTwoChoice == 'paper' || playerTwoChoice == 'scissors') {
+//                 playerTwoReady = true;
+//                 console.log(playerTwoChoice);
+//             }
+
+//             if (playerOneReady == true && playerTwoReady == true) {
+//                 gameStage = 'check-answers';
+//             }
+
+//             // if (gameStage == 'check-answers') {
+
+//             //     //if players choose the same
+//             //     if (playerOneChoice == playerTwoChoice) {
+//             //         playerOneTie = playerOneTie + 1;
+//             //         playerTwoTie = playerTwoTie + 1;
+//             //         gameStage = '';
+//             //         alert('tie');
+//             //         resetChoices()
+
+//             //     } else if (playerOneChoice == 'rock') {
+//             //         //if player 1 chooses rock
+//             //         if (playerTwoChoice == 'paper') {
+//             //             playerOneLosses = playerOneLosses + 1;
+//             //             playerTwoWins = playerTwoWins + 1;
+//             //             gameStage = '';
+//             //             alert('player 2 wins');
+//             //             resetChoices()
+//             //         } else {//checking scissors by elimination
+//             //             playerOneWins = playerOneWins + 1;
+//             //             playerTwoLosses = playerTwoLosses + 1;
+//             //             gameStage = '';
+//             //             alert('player 1 wins')
+//             //             resetChoices()
+//             //         };
+
+//             //     } else if (playerOneChoice == 'paper') {
+//             //         //if player 1 chooses paper
+//             //         if (playerTwoChoice == 'rock') {
+//             //             playerOneWins = playerOneWins + 1;
+//             //             playerTwoLosses = playerTwoLosses + 1;
+//             //             gameStage = '';
+//             //             alert('player 1 wins');
+//             //             resetChoices()
+//             //         } else {//checking scissors by elimination
+//             //             playerOneLosses = playerOneLosses + 1;
+//             //             playerTwoWins = playerTwoWins + 1;
+//             //             gameStage = '';
+//             //             alert('player 2 wins');
+//             //             resetChoices()
+//             //         };
+//             //     } else { //playerOneChoice is scissors by elimination
+//             //         if (playerTwoChoice == 'rock') {
+//             //             playerOneLosses = playerOneLosses + 1;
+//             //             playerTwoWins = playerTwoWins + 1;
+//             //             gameStage = '';
+//             //             alert('player 2 wins');
+//             //             resetChoices()
+//             //         } else {//checking paper by elimination
+//             //             playerOneWins = playerOneWins + 1;
+//             //             playerTwoLosses = playerTwoLosses + 1;
+//             //             gameStage = '';
+//             //             alert('player 1 wins');
+//             //             resetChoices()
+//             //         };
+//             //     };
+//             // }; //end section to check if game is ready to move on
+
+//         }); //end section to check answers when both players have selected
+
+//   //ends if statement to ensure there are two players
+
+
+//     //function to reset player choices to nothing
+
+//     // function resetChoices() {
+
+//     //     var playerOneChoiceRef = database.ref('/playerOneChoice');
+//     //     playerOneChoiceRef.set({
+//     //         playerOneChoice: playerOneChoice
+//     //     });
+
+//     //     var playerTwoChoiceRef = database.ref('/playerTwoChoice');
+//     //     playerTwoChoiceRef.set({
+//     //         playerTwoChoice: ''
+//     //     });
+
+//     //     playerOneChoice = '';
+//     //     playerTwoChoice = '';
+
+//     // }; //close resetChoices functions
 
 }); //Document ready close

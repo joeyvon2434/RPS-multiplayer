@@ -19,7 +19,8 @@ var playerTwo = {
     choice: ''
 };
 var viewers = [];
-var gameStage = 0;
+var gameReady = false;
+var gameStage = 'begin';
 
 
 
@@ -57,7 +58,7 @@ $(document).ready(function () {
             var gameStageRef = snapshot.val().gameStage;
             gameStage = gameStageRef.gameStage;
         } else {
-            gameStage = 0;
+            gameStage = 'begin';
         };
 
 
@@ -65,6 +66,7 @@ $(document).ready(function () {
         //Update usernameList
         if (snapshot.child("usernameList").exists()) {//sets usernameList from firebase
             usernameList = [];
+            
             var tempUserList = snapshot.val().usernameList.usernameList;
             usernameList = tempUserList
         } else { //gives a value if firebase has not stored the list yet
@@ -96,6 +98,14 @@ $(document).ready(function () {
             viewers = [];
         };
 
+        //set gameReady initial value
+        if(snapshot.child('gameReady').exists()) {
+            var tempGameReady = snapshot.val().gameReady.gameReady;
+            gameReady = tempGameReady;
+        } else {
+            gameReady = false;
+        }
+
 
         //Function to add usernames and populate players on the welcome screen
 
@@ -108,7 +118,6 @@ $(document).ready(function () {
             var tempUsername = $('#username-input').val()
             $('#username-input').val();
             var uniqueName = true;
-            console.log('unique ' +uniqueName);
 
             //check to see if username entered is unique
             if (tempUsername == "") {
@@ -121,10 +130,10 @@ $(document).ready(function () {
                         alert('That username is taken. Please enter another username.');
                         uniqueName = false;
                     }
-                }
+                };
             };//end of checking username for uniqueness
 
-            //Fade out the welcom screen and add username to list
+            //Fade out the welcom escreen and add username to list
             if (uniqueName == true) {
                 $('#welcome-page').fadeOut(500);
                 username = tempUsername;
@@ -172,17 +181,31 @@ $(document).ready(function () {
 
             }; //end of uniqueName portion
 
+        //section to start game if players 1 and 2 exist
+        //gameStage = begin
+
+        if (playerOne != '' && playerTwo != '') {
+            gameReady = true;
+            var gameReadyRef = database.ref('/gameReady');
+            gameReadyRef.set({
+                gameReady: true
+            })
+            console.log('made it');
+        } else {
+            gameReady = false;
+        };
+
 
         });//end of onClick when adding players
 
 
-
-
-    }); // close setting initial values and updates
-
-
     //Stage 1, Start game
-
+        //verify that game can enter the begin stage
+        if( gameReady === true && gameStage === 'begin') {
+            if(username == playerOne || username == playerTwo) {
+                $('.player-choose-message').fadeIn(500).delay(2000).fadeOut(500);
+            }
+        };//end begin stage
 
     //Stage 2, wait for selections
 
@@ -196,5 +219,5 @@ $(document).ready(function () {
     //Stage 5, Prepare for next round and reset to stage 1
 
 
-
+}); // close setting initial values and updates
 }); //close document ready function
