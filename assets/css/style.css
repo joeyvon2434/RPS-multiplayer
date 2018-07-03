@@ -100,6 +100,27 @@
     right: 5%;
 }
 
+.player-choose-message {
+    display: none;
+    position: fixed;
+    top: 25%;
+    right: 25%;
+    width: 50%;
+    height: 50%;
+    background-color: rgb(156, 156, 156, 0.5);
+}
+.choose-message {
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    top: 40%;
+    height: 30%;
+    text-align: center;
+    font-size: 30px;
+    color:red;
+    
+}
+
 .chat-box {
     position: absolute;
     top: 50%;

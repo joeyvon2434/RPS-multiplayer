@@ -30,9 +30,11 @@
             <h2 class="player-title">Player 1</h2>
             <div class="stats-box">stats</div>
             <div class="selection-box" style="border: 1px solid black;">
-                <img class="rock-box pictures" src="http://mmminimal.com/wp-content/uploads/2012/05/featured14.jpg" alt="rock">
-                <img class="paper-box pictures" src="https://st.depositphotos.com/1034300/1370/i/950/depositphotos_13700227-stock-photo-white-crumpled-paper-with-curled.jpg" alt="paper">
-                <img class="scissors-box pictures" src="https://cdn0.rubylane.com/shops/antiquefreak/scissors2.1L.jpg?91" alt="scissors">
+                <img id="player1-rock" class="rock-box pictures player1-choices" data-value="rock" src="http://mmminimal.com/wp-content/uploads/2012/05/featured14.jpg" alt="rock">
+                <img id="player1-paper" class="paper-box pictures player1-choices" data-value="paper" src="https://st.depositphotos.com/1034300/1370/i/950/depositphotos_13700227-stock-photo-white-crumpled-paper-with-curled.jpg"
+                    alt="paper">
+                <img id="player1-scissors" class="scissors-box pictures player1-choices" data-value="scissors" src="https://cdn0.rubylane.com/shops/antiquefreak/scissors2.1L.jpg?91"
+                    alt="scissors">
             </div>
             <div class="chat-box">chat box</div>
             <input id="player1-chat" class="chat-message" type="text">
@@ -44,9 +46,11 @@
             <h2 class="player-title">Player 2</h2>
             <div class="stats-box">stats</div>
             <div class="selection-box" style="border: 1px solid black;">
-                <img class="rock-box pictures" src="http://mmminimal.com/wp-content/uploads/2012/05/featured14.jpg" alt="rock">
-                <img class="paper-box pictures" src="https://st.depositphotos.com/1034300/1370/i/950/depositphotos_13700227-stock-photo-white-crumpled-paper-with-curled.jpg" alt="paper">
-                <img class="scissors-box pictures" src="https://cdn0.rubylane.com/shops/antiquefreak/scissors2.1L.jpg?91" alt="scissors">
+                <img id="player2-rock" class="rock-box pictures player2-choices" data-value="rock" src="http://mmminimal.com/wp-content/uploads/2012/05/featured14.jpg" alt="rock">
+                <img id="player2-paper" class="paper-box pictures player2-choices" data-value="paper" src="https://st.depositphotos.com/1034300/1370/i/950/depositphotos_13700227-stock-photo-white-crumpled-paper-with-curled.jpg"
+                    alt="paper">
+                <img id="player2-scissors" class="scissors-box pictures player2-choices" data-value="scissors" src="https://cdn0.rubylane.com/shops/antiquefreak/scissors2.1L.jpg?91"
+                    alt="scissors">
             </div>
             <div class="chat-box">chat box</div>
             <input id="player2-chat" class="chat-message" type="text">
@@ -55,18 +59,22 @@
         </div>
 
         <div id="viewer-box" style="border: 1px solid red;">
-                <h2 class="player-title">Viewers</h2>
-                <div class="queue-box">Next Player Queue</div>
-                <div class="info-box" style="border: 1px solid black;">
-                    <img class="player-1-choice" src="#" alt="player-2-choice">
-                    <div class="score-board">score board</div>
-                    <img class="player-2-choice" src="#" alt="player-2-choice">
-                </div>
-                <div class="chat-box">chat box</div>
-                <input id="viewer-chat" class="chat-message" type="text">
-                <button id="viewer-send" class="send-button">Send</button>
-    
+            <h2 class="player-title">Viewers</h2>
+            <div class="queue-box">Next Player Queue</div>
+            <div class="info-box" style="border: 1px solid black;">
+                <img class="player-1-choice" src="#" alt="player-2-choice">
+                <div class="score-board">score board</div>
+                <img class="player-2-choice" src="#" alt="player-2-choice">
             </div>
+            <div class="chat-box">chat box</div>
+            <input id="viewer-chat" class="chat-message" type="text">
+            <button id="viewer-send" class="send-button">Send</button>
+
+        </div>
+
+        <div class="player-choose-message"><h2 class="choose-message">Players, make your choice!</h2></div>
+
+
 
         <footer>Joseph Von Edwins 2018</footer>
     </div>
@@ -74,7 +82,7 @@
 
     <!--JQuery link script-->
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-    <script src="assets/javascript/app.js"></script>
+    <script src="assets/javascript/app2.js"></script>
 
 </body>
 
