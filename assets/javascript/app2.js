@@ -21,6 +21,7 @@ var playerTwo = {
 var viewers = [];
 var gameReady = false;
 var gameStage = 'begin';
+var playerOneChoice = '';
 
 
 
@@ -126,6 +127,8 @@ $(document).ready(function () {
             } else { //check previously added usernames vs new name
                 console.log('xxx');
                 for (i = 0; i < usernameList.length; i++) {
+                    console.log("Temp Name is: " + tempUsername);
+                    console.log("Name in database is: " + usernameList[i]);
                     if (tempUsername == usernameList[i]) {
                         alert('That username is taken. Please enter another username.');
                         uniqueName = false;
@@ -199,24 +202,62 @@ $(document).ready(function () {
         });//end of onClick when adding players
 
 
-    //Stage 1, Start game
-        //verify that game can enter the begin stage
+    //Stage 1, Start game (begin stage)
+
+        //verify that game can enter the begin stage and allow player selections
         if( gameReady === true && gameStage === 'begin') {
-            if(username == playerOne || username == playerTwo) {
-                $('.player-choose-message').fadeIn(500).delay(2000).fadeOut(500);
+            if (username === playerOne) {
+                $('#player1-box').delay(501).fadeIn(500);
+            } else if (username == playerTwo) {
+                $('#player2-box').delay(501).fadeIn(500);
+            } else if (username != playerOne && username != playerTwo) {
+                $('#viewer-box').delay(501).fadeIn(500);
             }
+
+            //read in selections of player 1 and player 2
+            //player 1
+            $(document).on('click', '.player1-choices', function () {
+                playerOneChoice = $(this).attr('data-value');
+
+                var playerOneRef = database.ref('/playerOne');
+                    playerOneRef.set({
+                        name: username,
+                        wins: 0,
+                        losses: 0,
+                        ties: 0,
+                        choice: playerOneChoice
+                    });
+
+                    $('.player1-choices').fadeOut(500);
+                
+            }); 
+            
+            $(document).on('click', '.player2-choices', function () {
+                playerTwoChoice = $(this).attr('data-value');
+
+                var playerTwoRef = database.ref('/playerTwo');
+                    playerTwoRef.set({
+                        name: username,
+                        wins: 0,
+                        losses: 0,
+                        ties: 0,
+                        choice: playerTwoChoice
+                    });
+
+                    $('.player2-choices').fadeOut(500);
+                
+            });//end player choices
+
         };//end begin stage
 
-    //Stage 2, wait for selections
+
+    //Stage 2, compare selections
 
 
-    //Stage 3, compare selections
+    //Stage 3, show winner / calculate stats
 
 
-    //Stage 4 show winner / calculate stats
-
-
-    //Stage 5, Prepare for next round and reset to stage 1
+    //Stage 4, Prepare for next round and reset to stage 1
 
 
 }); // close setting initial values and updates
