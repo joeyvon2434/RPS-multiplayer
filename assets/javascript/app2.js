@@ -63,6 +63,14 @@ $(document).ready(function () {
             gameStage = 'begin';
         };
 
+        //Update result
+        if (snapshot.child("result").exists()) {
+            var resultRef = snapshot.val().result;
+            result = resultRef.resultStage;
+        } else {
+            result = '';
+        };
+
 
 
         //Update usernameList
@@ -256,6 +264,13 @@ $(document).ready(function () {
                     gameStage: gameStage
                 });
 
+            } else {
+                gameStage = 'begin';
+
+                var gameStageRef = database.ref('/gameStage');
+                gameStageRef.set({
+                    gameStage: gameStage
+                });
             };
 
         };//end begin stage
@@ -263,43 +278,73 @@ $(document).ready(function () {
         //Stage 2, compare selections
 
         if (gameReady == true && gameStage == 'compare') {
+
+            console.log('once or twice');
+            console.log('p1 ' + playerOneChoice);
+            console.log('p2 ' + playerTwoChoice);
+
+            gameStage = 'hold';
+            var gameStageRef = database.ref('/gameStage');
+            gameStageRef.set({
+                gameStage: gameStage
+            });
+
+
             //ensure only wins and losses are only incremented once
             //by using only player 1 to complete them
-            if (username == playerOne) {
+            if (username == playerOne && gameStage == 'hold') {
                 //check for a tie
                 if (playerOneChoice == playerTwoChoice) {
                     result = 'tie';
+                    playerOneChoice = '';
+                    playerTwoChoice = '';
                     //check P1 choice = rock
                 } else if (playerOneChoice == 'rock') {
                     if (playerTwoChoice == 'paper') {
                         result = 'p2win';
-                    } else {
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
+                    } else if (playerTwoChoice == 'scissors') {
                         result = 'p1win';
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
                     }// check P1 choice = paper
                 } else if (playerOneChoice == 'paper') {
                     if (playerTwoChoice == 'rock') {
                         result = 'p1win';
-                    } else {
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
+                    } else if (playerTwoChoice == 'scissors') {
                         result = 'p2win';
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
                     }//check P1 choice == scissors by elimination
-                } else {
+                } else if (playerOneChoice == 'scissors') {
                     if (playerTwoChoice == 'paper') {
                         result = 'p1win';
-                    } else {
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
+                    } else if (playerTwoChoice == 'rock') {
                         result = 'p2win';
+                        playerOneChoice = '';
+                        playerTwoChoice = '';
                     };
                 };
 
-                
+
+
+
+                console.log('result ' + result);
+
+
+
+                //update player choice values in firebase
+
 
                 //update results
                 if (result == 'tie') {
 
-                    gameStage = 'results';
-                    var gameStageRef = database.ref('/gameStage');
-                    gameStageRef.set({
-                        gameStage: gameStage
-                    });
+
                     //pull player 1 ties
                     var playerOneRef = snapshot.val().playerOne;
                     var p1temp = playerOneRef.ties;
@@ -321,11 +366,7 @@ $(document).ready(function () {
                     });
 
                 } else if (result == 'p1win') {
-                    gameStage = 'results';
-                    var gameStageRef = database.ref('/gameStage');
-                    gameStageRef.set({
-                        gameStage: gameStage
-                    });
+
                     //pull player 1 wins
                     var playerOneRef = snapshot.val().playerOne;
                     var p1temp = playerOneRef.wins;
@@ -345,12 +386,9 @@ $(document).ready(function () {
                     playerTwoRef.update({
                         losses: p2temp,
                     });
-                } else if (result == 'p2wins') {
-                    gameStage = 'results';
-                    var gameStageRef = database.ref('/gameStage');
-                    gameStageRef.set({
-                        gameStage: gameStage
-                    });
+                } else if (result == 'p2win') {
+
+
                     //pull player 1 losses
                     var playerOneRef = snapshot.val().playerOne;
                     var p1temp = playerOneRef.losses;
@@ -372,27 +410,39 @@ $(document).ready(function () {
                     });
                 }
 
+
             }; //close comparisons in player 1 and calculations
 
-            //set player choices to ''
-            playerOneChoice = ''
-            playerTwoChoice = ''
-
-
-            //update player choice values in firebase
-
-            //alert everyone with the value of result
+            gameStage = 'results';
+            var gameStageRef = database.ref('/gameStage');
+            gameStageRef.set({
+                gameStage: gameStage
+            });
 
         };//End the compare section of the game
 
+        //begin the output seection of the game called results
+        if (gameStage == 'results' && gameReady == true) {
+
+            gameStage = 'hold';
+            
+            
 
 
+        }; //end results output section
 
-        //Stage 3, show winner / calculate stats
+
+        //alert everyone with the value of result and reset in firebase
+
+
+        //Stage 3, show winner / output stats
 
 
         //Stage 4, Prepare for next round and reset to stage 1
 
 
     }); // close setting initial values and updates
+
+    
+
 }); //close document ready function
