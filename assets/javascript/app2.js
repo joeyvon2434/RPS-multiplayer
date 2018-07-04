@@ -216,7 +216,7 @@ $(document).ready(function () {
                 $('#player1-box').delay(501).fadeIn(500);
             } else if (username == playerTwo) {
                 $('#player2-box').delay(501).fadeIn(500);
-            } else if (username != playerOne && username != playerTwo) {
+            } else if (username != playerOne && username != playerTwo && username != '') {
                 $('#viewer-box').delay(501).fadeIn(500);
             }
 
@@ -279,10 +279,6 @@ $(document).ready(function () {
 
         if (gameReady == true && gameStage == 'compare') {
 
-            console.log('once or twice');
-            console.log('p1 ' + playerOneChoice);
-            console.log('p2 ' + playerTwoChoice);
-
             gameStage = 'hold';
             var gameStageRef = database.ref('/gameStage');
             gameStageRef.set({
@@ -331,14 +327,6 @@ $(document).ready(function () {
                     };
                 };
 
-
-
-
-                console.log('result ' + result);
-
-
-
-                //update player choice values in firebase
 
 
                 //update results
@@ -424,25 +412,75 @@ $(document).ready(function () {
         //begin the output seection of the game called results
         if (gameStage == 'results' && gameReady == true) {
 
+
             gameStage = 'hold';
+
+            var playerOneRef = snapshot.val().playerOne;
+            var p1wins = playerOneRef.wins;
+            var p1losses = playerOneRef.losses;
+            var p1ties = playerOneRef.ties;
+            var p1choice = playerOneRef.choice;
+
+            $('.p1-wins').text('Wins: ' + p1wins);
+            $('.p1-losses').text('Losses: ' + p1losses);
+            $('.p1-ties').text('Ties: ' + p1ties);
+            $('.p1-choice').text('Choice: ' + p1choice);
+
+
+            var playerTwoRef = snapshot.val().playerTwo;
+            var p2wins = playerTwoRef.wins;
+            var p2losses = playerTwoRef.losses;
+            var p2ties = playerTwoRef.ties;
+            var p2choice = playerTwoRef.choice;
+
+            $('.p2-wins').text('Wins: ' + p2wins);
+            $('.p2-losses').text('Losses: ' + p2losses);
+            $('.p2-ties').text('Ties: ' + p2ties);
+            $('.p2-choice').text('Choice: ' + p2choice);
+
+            var playerOneRef = database.ref('/playerOne');
+            playerOneRef.update({
+                choice: ''
+            });
+
+            var playerTwoRef = database.ref('/playerTwo');
+            playerTwoRef.update({
+                choice: ''
+            });
+        
             
-            
+
+            setTimeout(function() {
+                var gameStageRef = database.ref('/gameStage');
+                        gameStageRef.update({
+                            gameStage: 'reset'
+                        });
+            }, 1000);
 
 
         }; //end results output section
 
 
-        //alert everyone with the value of result and reset in firebase
-
-
         //Stage 3, show winner / output stats
 
+        if (gameStage == 'reset' && gameReady == true) {
+            
+            var gameStageRef = database.ref('/gameStage');
+                        gameStageRef.update({
+                            gameStage: 'begin'
+                        });
+
+            $('.player1-choices').fadeIn(500);
+            $('.player2-choices').fadeIn(500);
+        };
 
         //Stage 4, Prepare for next round and reset to stage 1
 
 
     }); // close setting initial values and updates
 
-    
+
+
+
 
 }); //close document ready function
