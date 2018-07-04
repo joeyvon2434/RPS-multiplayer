@@ -22,6 +22,7 @@ var viewers = [];
 var gameReady = false;
 var gameStage = 'begin';
 var playerOneChoice = '';
+var result = '';
 
 
 
@@ -67,7 +68,7 @@ $(document).ready(function () {
         //Update usernameList
         if (snapshot.child("usernameList").exists()) {//sets usernameList from firebase
             usernameList = [];
-            
+
             var tempUserList = snapshot.val().usernameList.usernameList;
             usernameList = tempUserList
         } else { //gives a value if firebase has not stored the list yet
@@ -100,7 +101,7 @@ $(document).ready(function () {
         };
 
         //set gameReady initial value
-        if(snapshot.child('gameReady').exists()) {
+        if (snapshot.child('gameReady').exists()) {
             var tempGameReady = snapshot.val().gameReady.gameReady;
             gameReady = tempGameReady;
         } else {
@@ -114,7 +115,6 @@ $(document).ready(function () {
         $('#play-button').on('click', function (event) {
             event.preventDefault();
 
-            console.log('yyyy');
 
             var tempUsername = $('#username-input').val()
             $('#username-input').val();
@@ -125,10 +125,8 @@ $(document).ready(function () {
                 alert('You must enter a username to proceed.');
                 uniqueName = false;
             } else { //check previously added usernames vs new name
-                console.log('xxx');
                 for (i = 0; i < usernameList.length; i++) {
-                    console.log("Temp Name is: " + tempUsername);
-                    console.log("Name in database is: " + usernameList[i]);
+
                     if (tempUsername == usernameList[i]) {
                         alert('That username is taken. Please enter another username.');
                         uniqueName = false;
@@ -184,28 +182,28 @@ $(document).ready(function () {
 
             }; //end of uniqueName portion
 
-        //section to start game if players 1 and 2 exist
-        //gameStage = begin
+            //section to start game if players 1 and 2 exist
+            //gameStage = begin
 
-        if (playerOne != '' && playerTwo != '') {
-            gameReady = true;
-            var gameReadyRef = database.ref('/gameReady');
-            gameReadyRef.set({
-                gameReady: true
-            })
-            console.log('made it');
-        } else {
-            gameReady = false;
-        };
+            if (playerOne != '' && playerTwo != '') {
+                gameReady = true;
+                var gameReadyRef = database.ref('/gameReady');
+                gameReadyRef.set({
+                    gameReady: true
+                })
+
+            } else {
+                gameReady = false;
+            };
 
 
         });//end of onClick when adding players
 
 
-    //Stage 1, Start game (begin stage)
+        //Stage 1, Start game (begin stage)
 
         //verify that game can enter the begin stage and allow player selections
-        if( gameReady === true && gameStage === 'begin') {
+        if (gameReady === true && gameStage === 'begin') {
             if (username === playerOne) {
                 $('#player1-box').delay(501).fadeIn(500);
             } else if (username == playerTwo) {
@@ -220,45 +218,181 @@ $(document).ready(function () {
                 playerOneChoice = $(this).attr('data-value');
 
                 var playerOneRef = database.ref('/playerOne');
-                    playerOneRef.set({
-                        name: username,
-                        wins: 0,
-                        losses: 0,
-                        ties: 0,
-                        choice: playerOneChoice
-                    });
+                playerOneRef.update({
+                    choice: playerOneChoice
+                });
 
-                    $('.player1-choices').fadeOut(500);
-                
-            }); 
-            
+                $('.player1-choices').fadeOut(500);
+
+
+
+            });
+
             $(document).on('click', '.player2-choices', function () {
                 playerTwoChoice = $(this).attr('data-value');
 
                 var playerTwoRef = database.ref('/playerTwo');
-                    playerTwoRef.set({
-                        name: username,
-                        wins: 0,
-                        losses: 0,
-                        ties: 0,
-                        choice: playerTwoChoice
-                    });
+                playerTwoRef.update({
+                    choice: playerTwoChoice
+                });
 
-                    $('.player2-choices').fadeOut(500);
-                
+                $('.player2-choices').fadeOut(500);
+
             });//end player choices
+
+            //set values for choices from server
+            var playerOneRef = snapshot.val().playerOne;
+            playerOneChoice = playerOneRef.choice;
+
+            playerTwoRef = snapshot.val().playerTwo;
+            playerTwoChoice = playerTwoRef.choice;
+
+            //moves game to the compare stage
+            if (playerOneChoice != '' && playerTwoChoice != '') {
+                gameStage = 'compare';
+
+                var gameStageRef = database.ref('/gameStage');
+                gameStageRef.set({
+                    gameStage: gameStage
+                });
+
+            };
 
         };//end begin stage
 
+        //Stage 2, compare selections
 
-    //Stage 2, compare selections
+        if (gameReady == true && gameStage == 'compare') {
+            //ensure only wins and losses are only incremented once
+            //by using only player 1 to complete them
+            if (username == playerOne) {
+                //check for a tie
+                if (playerOneChoice == playerTwoChoice) {
+                    result = 'tie';
+                    //check P1 choice = rock
+                } else if (playerOneChoice == 'rock') {
+                    if (playerTwoChoice == 'paper') {
+                        result = 'p2win';
+                    } else {
+                        result = 'p1win';
+                    }// check P1 choice = paper
+                } else if (playerOneChoice == 'paper') {
+                    if (playerTwoChoice == 'rock') {
+                        result = 'p1win';
+                    } else {
+                        result = 'p2win';
+                    }//check P1 choice == scissors by elimination
+                } else {
+                    if (playerTwoChoice == 'paper') {
+                        result = 'p1win';
+                    } else {
+                        result = 'p2win';
+                    };
+                };
+
+                
+
+                //update results
+                if (result == 'tie') {
+
+                    gameStage = 'results';
+                    var gameStageRef = database.ref('/gameStage');
+                    gameStageRef.set({
+                        gameStage: gameStage
+                    });
+                    //pull player 1 ties
+                    var playerOneRef = snapshot.val().playerOne;
+                    var p1temp = playerOneRef.ties;
+                    p1temp = p1temp + 1;
+                    //pull player 2 ties
+                    playerTwoRef = snapshot.val().playerTwo;
+                    var p2temp = playerTwoRef.ties;
+                    p2temp = p2temp + 1;
+
+                    //update player 1 and player 2 ties
+                    var playerOneRef = database.ref('/playerOne');
+                    playerOneRef.update({
+                        ties: p1temp,
+                    });
+
+                    var playerTwoRef = database.ref('/playerTwo');
+                    playerTwoRef.update({
+                        ties: p2temp,
+                    });
+
+                } else if (result == 'p1win') {
+                    gameStage = 'results';
+                    var gameStageRef = database.ref('/gameStage');
+                    gameStageRef.set({
+                        gameStage: gameStage
+                    });
+                    //pull player 1 wins
+                    var playerOneRef = snapshot.val().playerOne;
+                    var p1temp = playerOneRef.wins;
+                    p1temp = p1temp + 1;
+                    //pull player 2 losses
+                    playerTwoRef = snapshot.val().playerTwo;
+                    var p2temp = playerTwoRef.losses;
+                    p2temp = p2temp + 1;
+
+                    //update player 1 and player 2 wins/losses
+                    var playerOneRef = database.ref('/playerOne');
+                    playerOneRef.update({
+                        wins: p1temp,
+                    });
+
+                    var playerTwoRef = database.ref('/playerTwo');
+                    playerTwoRef.update({
+                        losses: p2temp,
+                    });
+                } else if (result == 'p2wins') {
+                    gameStage = 'results';
+                    var gameStageRef = database.ref('/gameStage');
+                    gameStageRef.set({
+                        gameStage: gameStage
+                    });
+                    //pull player 1 losses
+                    var playerOneRef = snapshot.val().playerOne;
+                    var p1temp = playerOneRef.losses;
+                    p1temp = p1temp + 1;
+                    //pull player 2 wins
+                    playerTwoRef = snapshot.val().playerTwo;
+                    var p2temp = playerTwoRef.wins;
+                    p2temp = p2temp + 1;
+
+                    //update player 1 and player 2 wins/losses
+                    var playerOneRef = database.ref('/playerOne');
+                    playerOneRef.update({
+                        losses: p1temp,
+                    });
+
+                    var playerTwoRef = database.ref('/playerTwo');
+                    playerTwoRef.update({
+                        wins: p2temp,
+                    });
+                }
+
+            }; //close comparisons in player 1 and calculations
+
+            //set player choices to ''
+            playerOneChoice = ''
+            playerTwoChoice = ''
 
 
-    //Stage 3, show winner / calculate stats
+            //update player choice values in firebase
+
+            //alert everyone with the value of result
+
+        };//End the compare section of the game
 
 
-    //Stage 4, Prepare for next round and reset to stage 1
 
 
-}); // close setting initial values and updates
+        //Stage 3, show winner / calculate stats
+
+
+        //Stage 4, Prepare for next round and reset to stage 1
+
+
+    }); // close setting initial values and updates
 }); //close document ready function
