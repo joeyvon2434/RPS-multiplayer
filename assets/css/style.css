@@ -4,6 +4,20 @@
     min-height: 100vh;
 }
 
+#reset-button {
+    position: fixed;
+    display: block;
+    top: 18%;
+    right: 1%;
+    width: 10%;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid black;
+    background: rgb(99, 8, 8);
+    color: white;
+    cursor: pointer;
+}
+
 #main-title {
     width: 100%;
     margin-bottom: 30px;
@@ -70,7 +84,6 @@
     width: 20%;
     border: 1px solid black;
     top: 0;
-    height: 10vh;
 }
 
 .p1-stats-box {

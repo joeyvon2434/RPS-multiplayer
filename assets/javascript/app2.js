@@ -21,7 +21,6 @@ var playerTwo = {
 var viewers = [];
 var gameReady = false;
 var gameStage = 'begin';
-var playerOneChoice = '';
 var result = '';
 
 
@@ -46,14 +45,17 @@ $(document).ready(function () {
 
     firebase.initializeApp(config);
 
-
     //Stage 0, populate players and viewers
 
 
     var database = firebase.database();
 
+
+
     //set current/initial values from/for firebase, and provide updates
     database.ref().on('value', function (snapshot) {
+
+        
 
         //Update gameStage
         if (snapshot.child("gameStage").exists()) {
@@ -71,14 +73,12 @@ $(document).ready(function () {
             result = '';
         };
 
-
-
         //Update usernameList
         if (snapshot.child("usernameList").exists()) {//sets usernameList from firebase
             usernameList = [];
 
             var tempUserList = snapshot.val().usernameList.usernameList;
-            usernameList = tempUserList
+            usernameList = tempUserList;
         } else { //gives a value if firebase has not stored the list yet
             usernameList = [];
         };
@@ -114,7 +114,83 @@ $(document).ready(function () {
             gameReady = tempGameReady;
         } else {
             gameReady = false;
-        }
+        };
+
+
+        //reset button
+
+        $('#reset-button').on('click', function (event) {
+            event.preventDefault();
+
+            var gameStageRef = database.ref('/gameStage');
+            gameStageRef.set({
+                gameStage: 'reset'
+            });
+
+        });
+
+        // /////////////////////////////////
+
+        if (gameStage == 'reset') {
+
+            var gameReadyRef = database.ref('/gameReady');
+            gameReadyRef.remove();
+            //     ({
+            //     gameReady: false
+            // });
+
+            var gameStageRef = database.ref('/gameStage');
+            gameStageRef.remove();
+            // ({
+            //     gameStage: 'begin'
+            // });
+
+            var playerOneRef = database.ref('playerOne');
+            playerOneRef.remove();
+            // ({
+            //     name: '',
+            //     wins: 0,
+            //     losses: 0,
+            //     ties: 0,
+            //     choice: ''
+            // });
+
+            var playerTwoRef = database.ref('playerTwo');
+            playerTwoRef.remove();
+            // ({
+            //     name: '',
+            //     wins: 0,
+            //     losses: 0,
+            //     ties: 0,
+            //     choice: ''
+            // });
+
+            usernameList = [];
+            var usernameListRef = database.ref('/usernameList');
+            usernameListRef.remove();
+            // ({
+            //     usernameList: usernameList
+            // });
+
+            viewers = [];
+            var viewersRef = database.ref('/viewers');
+            viewersRef.remove();
+            // ({
+            //     viewers: viewers
+            // });
+
+            
+
+            sessionStorage.clear();
+
+        $('#welcome-page').show();
+        $('#player1-box').hide();
+        $('#player2-box').hide();
+        $('#viewer-box').hide();
+
+        };
+
+        ////////////////////////////////
 
 
         //Function to add usernames and populate players on the welcome screen
@@ -203,6 +279,10 @@ $(document).ready(function () {
             } else {
                 gameReady = false;
             };
+
+            $('#player1-box').hide();
+            $('#player2-box').hide();
+            $('#viewer-box').hide();
 
 
         });//end of onClick when adding players
@@ -447,14 +527,14 @@ $(document).ready(function () {
             playerTwoRef.update({
                 choice: ''
             });
-        
-            
 
-            setTimeout(function() {
+
+
+            setTimeout(function () {
                 var gameStageRef = database.ref('/gameStage');
-                        gameStageRef.update({
-                            gameStage: 'reset'
-                        });
+                gameStageRef.update({
+                    gameStage: 'start'
+                });
             }, 1000);
 
 
@@ -463,12 +543,12 @@ $(document).ready(function () {
 
         //Stage 3, show winner / output stats
 
-        if (gameStage == 'reset' && gameReady == true) {
-            
+        if (gameStage == 'start' && gameReady == true) {
+
             var gameStageRef = database.ref('/gameStage');
-                        gameStageRef.update({
-                            gameStage: 'begin'
-                        });
+            gameStageRef.update({
+                gameStage: 'begin'
+            });
 
             $('.player1-choices').fadeIn(500);
             $('.player2-choices').fadeIn(500);
