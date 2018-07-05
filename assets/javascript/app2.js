@@ -22,6 +22,8 @@ var viewers = [];
 var gameReady = false;
 var gameStage = 'begin';
 var result = '';
+var message = '';
+var newMessage = false;
 
 
 
@@ -55,7 +57,7 @@ $(document).ready(function () {
     //set current/initial values from/for firebase, and provide updates
     database.ref().on('value', function (snapshot) {
 
-        
+
 
         //Update gameStage
         if (snapshot.child("gameStage").exists()) {
@@ -114,6 +116,21 @@ $(document).ready(function () {
             gameReady = tempGameReady;
         } else {
             gameReady = false;
+        };
+
+        if (snapshot.child('message').exists()) {
+            var messageRef = snapshot.val().message;
+            console.log('messageRef' + messageRef);
+            message = messageRef.message;
+        } else {
+            message = '';
+        };
+
+        if (snapshot.child('newMessage').exists()) {
+            var newMessageRef = snapshot.val().newMessage;
+            newMessage = newMessageRef.newMessage;
+        } else {
+            newMessage = false;
         };
 
 
@@ -179,14 +196,14 @@ $(document).ready(function () {
             //     viewers: viewers
             // });
 
-            
+
 
             sessionStorage.clear();
 
-        $('#welcome-page').show();
-        $('#player1-box').hide();
-        $('#player2-box').hide();
-        $('#viewer-box').hide();
+            $('#welcome-page').show();
+            $('#player1-box').hide();
+            $('#player2-box').hide();
+            $('#viewer-box').hide();
 
         };
 
@@ -554,13 +571,44 @@ $(document).ready(function () {
             $('.player2-choices').fadeIn(500);
         };
 
-        //Stage 4, Prepare for next round and reset to stage 1
+        //Chat functionality
 
+        $(document).on('click', '.send-button', function (event) {
+            event.preventDefault();
+
+            var newId = $(this).attr('data-value')
+            message = $('#' + newId).val();
+
+            var messageRef = database.ref('/message');
+            messageRef.set({
+                message: message
+            });
+
+            var newMessageRef = database.ref('/newMessage');
+            newMessageRef.set({
+                newMessage: true
+            });
+
+        });
+
+        if (newMessage == true) {
+
+            var newMessageRef = database.ref('/newMessage');
+            newMessageRef.set({
+                newMessage: false
+            });
+
+            var messageRef = snapshot.val().message;
+            message = messageRef.message;
+
+            newp = $('<p>');
+            newp.text(username + ': ' + message);
+            $('.chat-box').append(newp);
+
+        
+        };
 
     }); // close setting initial values and updates
-
-
-
 
 
 }); //close document ready function
